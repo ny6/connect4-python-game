@@ -1,5 +1,6 @@
 from numpy import zeros, flip
 from sys import exit
+from math import floor
 import pygame
 
 BLUE = (0, 0, 255)
@@ -93,32 +94,20 @@ while not game_over:
         if event.type == pygame.QUIT:
             exit()
 
-        # if event.type == pygame.MOUSEBUTTONDOWN:
-        # Ask for player 1 input
-        # if turn == 0:
-        #     col = int(input("Player 1 make your selection (0-6): "))
-        #
-        #     if is_valid_location(board, col):
-        #         row = get_next_open_row(board, col)
-        #         drop_piece(board, row, col, 1)
-        #
-        #         if winning_move(board, 1):
-        #             print("Player 1 wins!!!")
-        #             game_over = True
-        #             break
-        # # Ask for player 2 input
-        # else:
-        #     col = int(input("Player 2 make your selection (0-6): "))
-        #     if is_valid_location(board, col):
-        #         row = get_next_open_row(board, col)
-        #         drop_piece(board, row, col, 2)
-        #
-        #         if winning_move(board, 2):
-        #             print("Player 2 wins!!!")
-        #             game_over = True
-        #             break
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            player = turn + 1
+            posx = event.pos[0]
+            col = int(floor(posx / SQUARE_SIZE))
 
-    # print_board(board)
-    #
-    # turn += 1
-    # turn %= 2
+            if is_valid_location(board, col):
+                row = get_next_open_row(board, col)
+                drop_piece(board, row, col, player)
+
+            if winning_move(board, player):
+                print(f"Player {player} wins!!!")
+                game_over = True
+                break
+
+            print_board(board)
+            turn += 1
+            turn %= 2
