@@ -5,6 +5,8 @@ import pygame
 
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 
 ROW_COUNT = 6
 COLUMN_COUNT = 7
@@ -43,15 +45,31 @@ def print_board(b) -> None:
     print(flip(b, 0))
 
 
+def draw_circle(c: int, r: int, color: str) -> None:
+    pygame.draw.circle(
+        screen, color,
+        (c * SQUARE_SIZE + HALF_SQUARE_SIZE, HEIGHT - (r * SQUARE_SIZE + HALF_SQUARE_SIZE)),
+        RADIUS
+    )
+
+
 def draw_board(b):
     for c in range(COLUMN_COUNT):
         for r in range(ROW_COUNT):
             pygame.draw.rect(screen, BLUE, (c * SQUARE_SIZE, r * SQUARE_SIZE + SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
             pygame.draw.circle(
-                screen, BLACK,
-                (c * SQUARE_SIZE + HALF_SQUARE_SIZE, r * SQUARE_SIZE + SQUARE_SIZE + HALF_SQUARE_SIZE),
+                screen, BLACK, (c * SQUARE_SIZE + HALF_SQUARE_SIZE, r * SQUARE_SIZE + SQUARE_SIZE + HALF_SQUARE_SIZE),
                 RADIUS
             )
+
+    for c in range(COLUMN_COUNT):
+        for r in range(ROW_COUNT):
+            if b[r][c] == 1:
+                draw_circle(c, r, RED)
+            elif b[r][c] == 2:
+                draw_circle(c, r, GREEN)
+
+    pygame.display.update()
 
 
 def winning_move(b: list, piece: int) -> bool:
@@ -108,6 +126,6 @@ while not game_over:
                 game_over = True
                 break
 
-            print_board(board)
+            draw_board(board)
             turn += 1
             turn %= 2
