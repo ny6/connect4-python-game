@@ -22,6 +22,8 @@ SIZE = (WIDTH, HEIGHT)
 pygame.init()
 screen = pygame.display.set_mode(SIZE)
 
+my_font = pygame.font.SysFont("monospace", 75)
+
 
 def create_board():
     return zeros((ROW_COUNT, COLUMN_COUNT))
@@ -108,12 +110,21 @@ turn = 0
 pygame.display.update()
 
 while not game_over:
+    player = turn + 1
+    active_color = RED if player == 1 else GREEN
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
 
+        if event.type == pygame.MOUSEMOTION:
+            pygame.draw.rect(screen, BLACK, (0, 0, WIDTH, SQUARE_SIZE))
+            posx = event.pos[0]
+            pygame.draw.circle(screen, active_color, (posx, HALF_SQUARE_SIZE), RADIUS)
+            pygame.display.update()
+
         if event.type == pygame.MOUSEBUTTONDOWN:
-            player = turn + 1
+            pygame.draw.rect(screen, BLACK, (0, 0, WIDTH, SQUARE_SIZE))
             posx = event.pos[0]
             col = int(floor(posx / SQUARE_SIZE))
 
@@ -122,10 +133,13 @@ while not game_over:
                 drop_piece(board, row, col, player)
 
             if winning_move(board, player):
-                print(f"Player {player} wins!!!")
+                label = my_font.render(f"Player {player} wins!!", 1, RED)
+                screen.blit(label, (40, 10))
                 game_over = True
-                break
 
             draw_board(board)
             turn += 1
             turn %= 2
+
+        if game_over:
+            pygame.time.wait(3000)
